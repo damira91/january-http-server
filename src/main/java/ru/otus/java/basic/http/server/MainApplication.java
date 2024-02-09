@@ -11,13 +11,3 @@ public class MainApplication {
     }
 }
 
-/**
- * HTTP/1.1 200 OK
- * Content-Type: text/html
- *
- * <html>
- *     <body>
- *         <h1>Hello World!</h1>
- *     </body>
- * </html>
- */
