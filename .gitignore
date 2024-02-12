@@ -1,3 +1,5 @@
 .idea/
 target/
 *.iml
+/src/pom.xml
+/january-http-server-feature-lesson2/.gitignore
