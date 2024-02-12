@@ -16,8 +16,8 @@ public class Dispatcher {
 
     public Dispatcher() {
         this.router = new HashMap<>();
-        this.router.put("/add", new OperationAddRequestProcessor());
-        this.router.put("/hello_world", new HelloWorldRequestProcessor());
+        this.router.put("GET /add", new OperationAddRequestProcessor());
+        this.router.put("GET /hello_world", new HelloWorldRequestProcessor());
         this.unknownRequestProcessor = new UnknownRequestProcessor();
     }
 
