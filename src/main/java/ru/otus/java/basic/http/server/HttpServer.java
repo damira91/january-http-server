@@ -3,31 +3,38 @@ package ru.otus.java.basic.http.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 
 public class HttpServer {
-    private int port;
-    private Dispatcher dispatcher;
+    static final Logger logger = Logger.getLogger(HttpServer.class.getName());
+    private final int port;
+    private final Dispatcher dispatcher;
+    private ExecutorService executor;
+
 
     public HttpServer(int port) {
         this.port = port;
         this.dispatcher = new Dispatcher();
+        this.executor = Executors.newFixedThreadPool(5);
     }
+
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Сервер запущен на порту: " + port);
+            logger.info("Сервер запущен на порту: " + port);
             while (true) {
-                try (Socket socket = serverSocket.accept()) {
-                    byte[] buffer = new byte[8192];
-                    int n = socket.getInputStream().read(buffer);
-                    String rawRequest = new String(buffer, 0, n);
-                    HttpRequest httpRequest = new HttpRequest(rawRequest);
-                    dispatcher.execute(httpRequest, socket.getOutputStream());
+                try {
+                    Socket socket = serverSocket.accept();
+                    executor.execute(new ConnectionHandler(socket, dispatcher));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, "Ошибка при принятии соединения", e);
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
